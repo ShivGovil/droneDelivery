@@ -16,6 +16,14 @@ struct DropZone {
     size_t centroid;
 };
 
+double dist(DropZone& p1, DropZone& p2) {
+    return sqrt(((p2.x - p1.x)*(p2.x - p1.x)) + ((p2.y - p1.y)*(p2.y - p1.y)));
+}
+
+double distNoSqrt(DropZone& p1, DropZone& p2) {
+    return ((p2.x - p1.x)*(p2.x - p1.x)) + ((p2.y - p1.y)*(p2.y - p1.y));
+}
+
 class DroneFlight {
 public:
     vector<DropZone> drops;
@@ -152,51 +160,77 @@ private:
 
         return false;
     }
-
-    double dist(DropZone& p1, DropZone& p2) {
-        return sqrt(((p2.x - p1.x)*(p2.x - p1.x)) + ((p2.y - p1.y)*(p2.y - p1.y)));
-    }
-
-    double distNoSqrt(DropZone& p1, DropZone& p2) {
-        return ((p2.x - p1.x)*(p2.x - p1.x)) + ((p2.y - p1.y)*(p2.y - p1.y));
-    }
-
 };
 
-void kMeans(vector<DropZone>& locations) {
+void initCentroids(vector<DropZone>& locations, vector<DropZone>& centroids) {
+    srand(2);
+    for (auto& centroid : centroids) {
+        size_t randomIndex = rand() % locations.size();
+        centroid.x = locations[randomIndex].x;
+        centroid.y = locations[randomIndex].y;
+    }
+}
 
+void setClosestCentroids(vector<DropZone>& locations, vector<DropZone>& centroids) {
+    for (auto& location : locations) {
+        double minDistance = numeric_limits<double>::infinity();
+        size_t newCentroid = 0;
+        for (auto& centroid : centroids) {
+            double newDist = dist(location, centroid);
+            if (minDistance > newDist) {
+                minDistance = newDist;
+                newCentroid = centroid.centroid;
+            }
+        }
+        location.centroid = newCentroid;
+    }
+}
+
+bool recalibrateCentroids(vector<DropZone>& locations, vector<DropZone>& centroids, size_t droneCount) {
+    vector<double> sumX(droneCount, 0);
+    vector<double> sumY(droneCount, 0);
+    vector<double> clusterCounts(droneCount, 0);
+
+    vector<DropZone> oldCentroids = centroids;
+
+    for (auto& location : locations) {
+        sumX[location.centroid] += location.x;
+        sumY[location.centroid] += location.y;
+        clusterCounts[location.centroid]++;
+    }
+
+    double centroidVariation = 0;
+
+    for (size_t cluster = 0; cluster < droneCount; cluster++) {
+        centroids[cluster].x = sumX[cluster] / clusterCounts[cluster];
+        centroids[cluster].y = sumY[cluster] / clusterCounts[cluster];
+        centroidVariation += dist(oldCentroids[cluster], centroids[cluster]);
+    }
+
+    if (centroidVariation < 1e-10) return false;
+    else return true;
 }
 
 int main(int argc, char* argv[]) {
     ios_base::sync_with_stdio(false);
-    // cout << setprecision(2);
-    // cout << fixed;
+    cout << setprecision(2);
+    cout << fixed;
 
     size_t droneCount;
 
     cin >> droneCount;
 
-    const size_t MIN_DRONE_COUNT = 1;
-    const size_t MAX_DRONE_COUNT = 5;
-
-    if (droneCount < MIN_DRONE_COUNT || droneCount > MAX_DRONE_COUNT) {
-        cerr << "Drone fleet size must be between 1 and 5. Exiting...\n";
-        exit(1);
-    }
-
-    vector<DroneFlight> drones(droneCount);
-
-    for (size_t drone = 0; drone < droneCount; drone++) {
-        drones[drone] = DroneFlight();
-    }
+    vector<DroneFlight> drones(droneCount, DroneFlight());
 
     size_t num;
     cin >> num;
 
-    vector<DropZone> locations(num);
+    if (num / droneCount > 25) {
+        cerr << "# of locations exceeds fleet capacity (>25 locations per drone). Exiting...\n";
+        exit(1);
+    }
 
-    size_t curr = 0;
-    size_t centroidNum = 0;
+    vector<DropZone> locations(num);
 
     for (size_t i = 0; i < num; i++) {
         cin >> locations[i].x;
@@ -213,15 +247,21 @@ int main(int argc, char* argv[]) {
         
         locations[i].distance = numeric_limits<double>::infinity();
         locations[i].visited = false;
-        if (curr > num / droneCount) {
-            curr = 0;
-            centroidNum++;
-        }
-        locations[i].centroid = centroidNum;
-        curr++;
     }
 
-    // kMeans(locations);
+    vector<DropZone> centroids(droneCount, DropZone());
+    for (size_t centroid = 0; centroid < droneCount; centroid++) {
+        centroids[centroid].centroid = centroid;
+    }
+
+    bool epsilon = true;
+
+    initCentroids(locations, centroids);
+
+    while (epsilon) {
+        setClosestCentroids(locations, centroids);
+        epsilon = recalibrateCentroids(locations, centroids, droneCount);
+    }
 
     for (auto& location : locations) {
         drones[location.centroid].dropsCount++;
@@ -244,7 +284,7 @@ int main(int argc, char* argv[]) {
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1000, 1000, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1000, 1000, "Drone Routes", NULL, NULL);
 
     if (!window)
     {
@@ -260,7 +300,9 @@ int main(int argc, char* argv[]) {
         {0, 1, 0},
         {0, 0, 1},
         {1, 1, 0},
-        {0, 1, 1}
+        {0, 1, 1},
+        {1, 0, 1},
+        {1, 1, 1}
     };
 
     /* Loop until the user closes the window */
@@ -269,8 +311,8 @@ int main(int argc, char* argv[]) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glPointSize(20);
-        glLineWidth(3);
+        glPointSize(15);
+        glLineWidth(5);
         glEnable(GL_POINT_SMOOTH);
         glEnable(GL_COLOR_MATERIAL);
 
