@@ -36,3 +36,5 @@ spec-test.txt
 *.exe
 *.out
 *.app
+
+.DS_Store
