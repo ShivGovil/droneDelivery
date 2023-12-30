@@ -6,5 +6,7 @@ To use the simulation, clone the repo, build the project, execute app with test 
 ```
 <n drones>
 <m delivery locations>
-<x y> [x, y such that -100 < x, y < 100] - m new line separated coordinate pairs
+<m new line separated coordinate pairs>
+    eg. 15 -32
+    x, y belong to [-100, 100]
 ```
