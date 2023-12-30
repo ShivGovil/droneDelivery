@@ -7,6 +7,15 @@ To use the simulation:
 ./app < drone-test-large.txt
 ```
 
+# Input File Format
+```
+<n drones>
+<m delivery locations>
+<m new line separated coordinate pairs>
+    eg. 15 -32
+    x, y belong to [-100, 100]
+```
+
 # Example Output
 ```
 Drone 1 cost: 186.93
@@ -21,12 +30,3 @@ Drone 9 cost: 154.05
 Drone 10 cost: 186.89
 ```
 <img width="998" alt="Screenshot 2023-12-30 at 4 20 25 PM" src="https://github.com/ShivGovil/droneDelivery/assets/26761109/dd4a0aa4-2d3a-4696-afac-db3edbff58e7">
-
-# Input File Format
-```
-<n drones>
-<m delivery locations>
-<m new line separated coordinate pairs>
-    eg. 15 -32
-    x, y belong to [-100, 100]
-```
