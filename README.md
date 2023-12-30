@@ -2,7 +2,7 @@
 
 To use the simulation, clone the repo, build the project, execute app with test files
 
-# Test File Format
+# Input File Format
 ```
 <n drones>
 <m delivery locations>
