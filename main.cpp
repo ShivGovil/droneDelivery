@@ -321,7 +321,7 @@ int main(int argc, char* argv[]) {
         for (auto& drone : drones) {
             glBegin(GL_POINTS);
             glColor3f(colors[count][0], colors[count][1], colors[count][2]);
-            count++;
+            count = (count + 1) % colors.size();
             for (size_t i = 0; i < drone.dropsCount; i++) {
                 glVertex2f(drone.drops[drone.bestPath[i]].x/100, drone.drops[drone.bestPath[i]].y/100);
             }
@@ -333,7 +333,7 @@ int main(int argc, char* argv[]) {
         for (auto& drone : drones) {
             glBegin(GL_LINE_LOOP);
             glColor3f(colors[count][0], colors[count][1], colors[count][2]);
-            count++;
+            count = (count + 1) % colors.size();
             for (size_t i = 0; i < drone.dropsCount; i++) {
                 glVertex2f(drone.drops[drone.bestPath[i]].x/100, drone.drops[drone.bestPath[i]].y/100);
             }
