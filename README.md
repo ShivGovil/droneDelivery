@@ -1,6 +1,12 @@
 # Drone Delivery Simulation
 
-To use the simulation, clone the repo, build the project, execute app with test files
+To use the simulation:
+1. Clone the repo
+2. Build project
+3. Run app executable with input file redirection
+```
+./app < drone-test-large.txt
+```
 
 # Input File Format
 ```
