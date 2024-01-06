@@ -11,6 +11,7 @@ To use the simulation:
 ```
 <n drones>
 <m delivery locations>
+<0 or 1 to print centroids>
 <m new line separated coordinate pairs>
     eg. 15 -32
     x, y ∈ [-COORD_LIMIT, COORD_LIMIT]

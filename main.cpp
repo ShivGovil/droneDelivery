@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 using namespace std;
 
-const int COORD_LIMIT = 1000;
+const int COORD_LIMIT = 100;
 
 struct DropZone {
     double x;
@@ -232,6 +232,9 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
+    bool printCentroids;
+    cin >> printCentroids;
+
     vector<DropZone> locations(num);
 
     for (size_t i = 0; i < num; i++) {
@@ -307,7 +310,6 @@ int main(int argc, char* argv[]) {
         {1, 1, 0},
         {0, 1, 1},
         {1, 0, 1},
-        {1, 1, 1}
     };
 
     /* Loop until the user closes the window */
@@ -315,11 +317,23 @@ int main(int argc, char* argv[]) {
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+
+        if (printCentroids) {
+            glPointSize(12);
+
+            for (auto& centroid : centroids) {
+                glBegin(GL_POINTS);
+                glColor3f(1, 1, 1);
+                count = (count + 1) % colors.size();
+                glVertex2f(centroid.x/COORD_LIMIT, centroid.y/COORD_LIMIT);
+                glEnd();
+            }
+        }
         
+        glEnable(GL_COLOR_MATERIAL);
+        glEnable(GL_POINT_SMOOTH);
         glPointSize(8);
         glLineWidth(3);
-        glEnable(GL_POINT_SMOOTH);
-        glEnable(GL_COLOR_MATERIAL);
 
         size_t count = 0;
         
