@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 using namespace std;
 
+const int POINT_DISTRIBUTION = 1000;
+
 struct DropZone {
     double x;
     double y;
@@ -207,7 +209,7 @@ bool recalibrateCentroids(vector<DropZone>& locations, vector<DropZone>& centroi
         centroidVariation += dist(oldCentroids[cluster], centroids[cluster]);
     }
 
-    if (centroidVariation < 1e-10) return false;
+    if (centroidVariation < 1e-5) return false;
     else return true;
 }
 
@@ -234,14 +236,14 @@ int main(int argc, char* argv[]) {
 
     for (size_t i = 0; i < num; i++) {
         cin >> locations[i].x;
-        if (locations[i].x < -100 || locations[i].x > 100) {
-            cerr << "Coordinates must be between -100 and 100. Exiting...\n";
+        if (locations[i].x < -POINT_DISTRIBUTION || locations[i].x > POINT_DISTRIBUTION) {
+            cerr << "Coordinates must be between -" << POINT_DISTRIBUTION << " and " << POINT_DISTRIBUTION << ". Exiting...\n";
             exit(1);
         }
 
         cin >> locations[i].y;
-        if (locations[i].y < -100 || locations[i].y > 100) {
-            cerr << "Coordinates must be between -100 and 100. Exiting...\n";
+        if (locations[i].y < -POINT_DISTRIBUTION || locations[i].y > POINT_DISTRIBUTION) {
+            cerr << "Coordinates must be between -" << POINT_DISTRIBUTION << " and " << POINT_DISTRIBUTION << ". Exiting...\n";
             exit(1);
         }
         
@@ -258,9 +260,12 @@ int main(int argc, char* argv[]) {
 
     initCentroids(locations, centroids);
 
+    // int curr = 1;
+
     while (epsilon) {
         setClosestCentroids(locations, centroids);
         epsilon = recalibrateCentroids(locations, centroids, droneCount);
+        // cout << "Iteration: " << curr++ << "\n";
     }
 
     for (auto& location : locations) {
@@ -311,8 +316,8 @@ int main(int argc, char* argv[]) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glPointSize(15);
-        glLineWidth(5);
+        glPointSize(8);
+        glLineWidth(3);
         glEnable(GL_POINT_SMOOTH);
         glEnable(GL_COLOR_MATERIAL);
 
@@ -323,7 +328,7 @@ int main(int argc, char* argv[]) {
             glColor3f(colors[count][0], colors[count][1], colors[count][2]);
             count = (count + 1) % colors.size();
             for (size_t i = 0; i < drone.dropsCount; i++) {
-                glVertex2f(drone.drops[drone.bestPath[i]].x/100, drone.drops[drone.bestPath[i]].y/100);
+                glVertex2f(drone.drops[drone.bestPath[i]].x/POINT_DISTRIBUTION, drone.drops[drone.bestPath[i]].y/POINT_DISTRIBUTION);
             }
             glEnd();
         }
@@ -335,7 +340,7 @@ int main(int argc, char* argv[]) {
             glColor3f(colors[count][0], colors[count][1], colors[count][2]);
             count = (count + 1) % colors.size();
             for (size_t i = 0; i < drone.dropsCount; i++) {
-                glVertex2f(drone.drops[drone.bestPath[i]].x/100, drone.drops[drone.bestPath[i]].y/100);
+                glVertex2f(drone.drops[drone.bestPath[i]].x/POINT_DISTRIBUTION, drone.drops[drone.bestPath[i]].y/POINT_DISTRIBUTION);
             }
             glEnd();
         }
