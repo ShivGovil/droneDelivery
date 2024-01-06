@@ -29,3 +29,4 @@ Drone 8 cost: 2283.28
 Drone 9 cost: 2392.19
 Drone 10 cost: 2525.64
 ```
+![droneRoutes](https://github.com/ShivGovil/droneDelivery/assets/26761109/c58112d5-7b32-43e0-8fa5-4c22199c2af3)
