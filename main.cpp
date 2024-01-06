@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 using namespace std;
 
-const int POINT_DISTRIBUTION = 1000;
+const int COORD_LIMIT = 1000;
 
 struct DropZone {
     double x;
@@ -236,14 +236,14 @@ int main(int argc, char* argv[]) {
 
     for (size_t i = 0; i < num; i++) {
         cin >> locations[i].x;
-        if (locations[i].x < -POINT_DISTRIBUTION || locations[i].x > POINT_DISTRIBUTION) {
-            cerr << "Coordinates must be between -" << POINT_DISTRIBUTION << " and " << POINT_DISTRIBUTION << ". Exiting...\n";
+        if (locations[i].x < -COORD_LIMIT || locations[i].x > COORD_LIMIT) {
+            cerr << "Coordinates must be between -" << COORD_LIMIT << " and " << COORD_LIMIT << ". Exiting...\n";
             exit(1);
         }
 
         cin >> locations[i].y;
-        if (locations[i].y < -POINT_DISTRIBUTION || locations[i].y > POINT_DISTRIBUTION) {
-            cerr << "Coordinates must be between -" << POINT_DISTRIBUTION << " and " << POINT_DISTRIBUTION << ". Exiting...\n";
+        if (locations[i].y < -COORD_LIMIT || locations[i].y > COORD_LIMIT) {
+            cerr << "Coordinates must be between -" << COORD_LIMIT << " and " << COORD_LIMIT << ". Exiting...\n";
             exit(1);
         }
         
@@ -328,7 +328,7 @@ int main(int argc, char* argv[]) {
             glColor3f(colors[count][0], colors[count][1], colors[count][2]);
             count = (count + 1) % colors.size();
             for (size_t i = 0; i < drone.dropsCount; i++) {
-                glVertex2f(drone.drops[drone.bestPath[i]].x/POINT_DISTRIBUTION, drone.drops[drone.bestPath[i]].y/POINT_DISTRIBUTION);
+                glVertex2f(drone.drops[drone.bestPath[i]].x/COORD_LIMIT, drone.drops[drone.bestPath[i]].y/COORD_LIMIT);
             }
             glEnd();
         }
@@ -340,7 +340,7 @@ int main(int argc, char* argv[]) {
             glColor3f(colors[count][0], colors[count][1], colors[count][2]);
             count = (count + 1) % colors.size();
             for (size_t i = 0; i < drone.dropsCount; i++) {
-                glVertex2f(drone.drops[drone.bestPath[i]].x/POINT_DISTRIBUTION, drone.drops[drone.bestPath[i]].y/POINT_DISTRIBUTION);
+                glVertex2f(drone.drops[drone.bestPath[i]].x/COORD_LIMIT, drone.drops[drone.bestPath[i]].y/COORD_LIMIT);
             }
             glEnd();
         }

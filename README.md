@@ -2,9 +2,9 @@
 To use the simulation:
 1. Clone the repo
 2. Build project
-3. Run app executable with input file redirection
+3. Run ./app executable with input file
 ```
-./app < drone-test-large.txt
+./app < drone-test-large1000.txt
 ```
 
 # Input File Format
@@ -13,20 +13,19 @@ To use the simulation:
 <m delivery locations>
 <m new line separated coordinate pairs>
     eg. 15 -32
-    x, y belong to [-100, 100]
+    x, y ∈ [-COORD_LIMIT, COORD_LIMIT]
 ```
 
 # Example Output
 ```
-Drone 1 cost: 186.93
-Drone 2 cost: 192.40
-Drone 3 cost: 146.28
-Drone 4 cost: 213.88
-Drone 5 cost: 175.93
-Drone 6 cost: 176.53
-Drone 7 cost: 216.98
-Drone 8 cost: 202.62
-Drone 9 cost: 154.05
-Drone 10 cost: 186.89
+Drone 1 cost: 2728.36
+Drone 2 cost: 1794.21
+Drone 3 cost: 2405.91
+Drone 4 cost: 3417.81
+Drone 5 cost: 2592.07
+Drone 6 cost: 2600.31
+Drone 7 cost: 2473.58
+Drone 8 cost: 2283.28
+Drone 9 cost: 2392.19
+Drone 10 cost: 2525.64
 ```
-<img width="998" alt="Screenshot 2023-12-30 at 4 20 25 PM" src="https://github.com/ShivGovil/droneDelivery/assets/26761109/dd4a0aa4-2d3a-4696-afac-db3edbff58e7">
